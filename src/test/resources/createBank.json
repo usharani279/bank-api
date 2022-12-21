@@ -1,0 +1,13 @@
+{
+		"accountNum" : 2345678987,
+		"customerName" : "joni",
+		"atmPin" : 2345,
+		"bankName" : "AXIS",
+		"accountType" : "current",
+		"ifscCode" : "AXIS01",
+		"branchName" : "hyderabad",
+        "depositAmount" : 6000,
+		"accountStatus" : "InActive",
+		"mailId" : "joni@gmail.com",
+		"contact" : 9090909090
+	}

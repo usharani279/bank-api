@@ -1,0 +1,9 @@
+%dw 2.0
+
+type auto_c467a477_87db_4bb8_be11_10d263f38c3d_Input_Payload = {|
+  user: String, 
+  password: String, 
+  accountNum: Number, 
+  bank: String
+|}
+

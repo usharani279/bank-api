@@ -1,0 +1,103 @@
+#%RAML 1.0
+title: bank_api
+description: bank account transaction details api
+traits:
+  error_response : !include trait.raml
+/createAccount:
+  post:
+    queryParameters:
+      customerName:
+        required: true
+        default: string
+        maxLength: 45
+      bank:
+        required: true
+        enum: [ICICI,AXIS,HDFC]  
+      accountType:
+        required: true
+        enum: [savings,current]
+      branchName:
+        required: true
+        default: string
+        maxLength: 10
+    body:
+      application/json:
+        type: object
+        properties:
+          accountNum:
+            required: true
+            type: number
+            maximum: 9999999999
+          atmPin:
+            required: true
+            type: number
+            maximum: 9999
+          ifscCode:
+            required: true
+            type: string
+            maxLength: 10
+          depositAmount:
+            required: false
+            type: number
+          mailId:
+            required: true
+            type: string
+          contact:
+            required: true
+            type: number
+    responses:
+      201:
+        body:
+          application/json:
+            example: !include example/created-success.json
+/checkBalance:
+  is: [error_response]
+  get:
+    queryParameters:
+      bank:
+        required: true
+        enum: [ICICI,AXIS,HDFC]
+      accountType:
+        required: true
+        enum: [savings,current]
+      accountNum:
+        required: true
+        default: number
+        maxLength: 10
+      atmPin:
+        required: true
+        default: "0000"
+        maxLength: 4
+    responses:
+          200:
+            body:
+              application/json:
+                example:
+                  {
+                  "message" : "200ok"
+                }
+/unblock:
+  is: [error_response]
+  put:
+    body:
+      application/json:
+        type: object
+        properties:
+          user:
+            default: "admin"
+            type: string
+          password:
+            default: "admin"
+            type: string
+          accountNum:
+            required: true
+            type: number
+            maximum: 9999999999
+          bank:
+            required: true
+            enum: [ICICI,AXIS,HDFC]
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include example/unblock-success.json

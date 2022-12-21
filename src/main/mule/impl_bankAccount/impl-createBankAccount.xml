@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="createdBankAccount-Flow" doc:id="b6e847cf-f2cf-465e-8a60-4d7045003a80" >
+		<ee:transform doc:name="metadata" doc:id="7e4784a5-4eed-4e7a-a771-92561dfdb033">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="inputData"><![CDATA[%dw 2.0
+output application/json
+---
+payload ++ {
+	"transactionTimeStamp" : now() ,
+    "totalBalance" : payload.depositAmount
+	
+}]]></ee:set-variable>
+				<ee:set-variable variableName="custName" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.queryParams.customerName]]></ee:set-variable>
+				<ee:set-variable variableName="bank" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.queryParams.bank]]></ee:set-variable>
+				<ee:set-variable variableName="accType" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.queryParams.accountType]]></ee:set-variable>
+				<ee:set-variable variableName="branchName" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.queryParams.branchName]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<db:select doc:name="fetching bank details" doc:id="cf2f6534-70c3-4d93-9629-d16d4be70a0d" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from Bank_Transactions where accountNum =:accountNum and bankName = :bankName]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	"accountNum" : payload.accountNum,
+	"bankName" : payload.bankName
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="payload of bank" doc:id="8c4621b3-e55e-49b1-bc60-eaf252e1368e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+sizeOf(payload default "") > 0]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="fetching DB data message" doc:id="2a0d5374-1e4e-444b-95a7-bdaf4737b49c" message='#["fetching DB data"]'/>
+		<choice doc:name="Choice" doc:id="589ad153-3ede-4f9a-9f1d-35afbb28d775">
+			<when expression="#[!payload]">
+				<db:insert doc:id="42d064c8-b102-40e2-bda3-7120b354506f" config-ref="Database_Config" doc:name="inserting new bank details">
+			<db:sql><![CDATA[insert into Bank_Transactions 
+values(:accountNum,:customerName,:atmPin,:bankName,:accountType,:ifscCode,:branchName,
+:depositAmount,:totalBalance,:transactionTimeStamp,:accountStatus,:mailId,:contact);]]></db:sql>
+			<db:input-parameters><![CDATA[#[vars.inputData]]]></db:input-parameters>
+		</db:insert>
+				<ee:transform doc:name="inserted message with account number" doc:id="527e4258-28d3-417c-beb2-ce230bfc92dc">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"status" : "Account Created Successfully with Account Number" ++ ":" ++ vars.inputData.accountNum ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<logger level="INFO" doc:name="accont created sucess message" doc:id="c1e621fa-823a-4d93-805a-df670d16e45e" message='#["status":"Account Created Successfully with Account Number xxxxxxxx"]' />
+			</when>
+			<otherwise>
+				<ee:transform doc:name="account already exist payload" doc:id="aebba103-3d77-4444-a04b-08aa630a0d24">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status" : "Account already exist" ++  "-" ++ vars.inputData.accountNum
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="account already exist message" doc:id="05cb8c7c-c4c3-403c-a600-3e35d8d7980f" message='#["Account already exist"]'/>
+			
+</otherwise>
+		</choice>
+	</flow>
+	</mule>

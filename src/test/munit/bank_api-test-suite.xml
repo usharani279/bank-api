@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="bank_api-test-suite.xml" >
+		<munit:parameterizations >
+			<munit:parameterization name="bank" >
+				<munit:parameters >
+					<munit:parameter propertyName="attributes.queryParams.bank" value="hdfc" />
+				</munit:parameters>
+			</munit:parameterization>
+		</munit:parameterizations>
+	</munit:config>
+	<munit:test name="bank_api-test-suite-post:\createAccount:application\json:bank_api-configTest" doc:id="5191a5bb-27b7-4e66-8f6f-c87d539a6454" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0afb8441-5b62-4363-a7a7-500eb99a4f47" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cf2f6534-70c3-4d93-9629-d16d4be70a0d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="8d57f4ae-a2d3-4256-a8af-07232d0ea752" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="42d064c8-b102-40e2-bda3-7120b354506f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="fab86a69-7941-4374-bde7-4735a5c4b70d" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "accountNum": 2345678980,&#10;  "customerName": "joni",&#10;  "atmPin": 2345,&#10;  "bankName": "AXIS",&#10;  "accountType": "current",&#10;  "ifscCode": "AXIS01",&#10;  "branchName": "hyderabad",&#10;  "depositAmount": 6000,&#10;  "accountStatus": "InActive",&#10;  "mailId": "joni@gmail.com",&#10;  "contact": 9090909090,&#10;  "transactionTimeStamp": "2022-12-06T11:46:07.0005463+05:30",&#10;  "totalBalance": 6000&#10;}]' encoding="UTF-8" mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="2022-12-06T11:46:07.0005463+05:30" />
+					<munit:variable key="custName" value="vhgij" />
+					<munit:variable key="bank" value="HDFC" />
+					<munit:variable key="accType" value="sahdiua" />
+					<munit:variable key="branchNmae" value="current" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to post:\createAccount:application\json:bank_api-config" doc:id="fa40e4c5-319e-469c-9af3-5b559aa87740" name="post:\createAccount:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="7258b60d-cc36-4b87-b796-73ad8ba21189" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-post:\createAccount:application\json:bank_api-configTest2" doc:id="5fd03ead-7e05-487c-8947-722d7f87a172" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="b6564c0d-1d2b-4283-98ef-06ed61240c6b" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cf2f6534-70c3-4d93-9629-d16d4be70a0d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1223fa3e-7f5a-466e-8b0b-38937025cecb" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="42d064c8-b102-40e2-bda3-7120b354506f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="d7656b0b-ab02-4349-8185-9d10bd49aec4" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;		"accountNum" : 6677678900,&#10;		"customerName" : "sahasra",&#10;		"atmPin" : 8899,&#10;		"bankName" : "HDFC",&#10;		"accountType" : "current",&#10;		"ifscCode" : "HDFC01",&#10;		"branchName" : "hyderabad",&#10;        "depositAmount" : 9000,&#10;		"accountStatus" : "InActive",&#10;		"mailId" : "sahasra@gmail.com",&#10;		"contact" : 8098909087&#10;	}]' mediaType="application/json" />
+				<munit:attributes value='#[{&#10;&#10;"queryParams" :  {&#10;&#10;                          "customerName":"sahasra",&#10;&#10;                             "branchName":"Hyderabad",&#10;&#10;                           "accountType":"current",&#10;&#10;                           "bank":"HDFC"&#10;&#10;                        &#10;   }&#10;&#10;}]' />
+				<munit:variables >
+					<munit:variable key="inputData" value="hjwdehwief" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to post:\createAccount:application\json:bank_api-config" doc:id="1bf11d15-0bcb-4cb6-8748-c97981deb425" name="post:\createAccount:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="98f7ef2f-4c41-4424-9bee-012c5eafc7bd" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-get:\checkBalance:bank_api-configTest" doc:id="e97c9f63-8811-4ef9-a1a3-9562a2fe6455" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4978d382-6bd4-4f97-ba7e-8d40ca0441fa" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="1dd4e475-8417-4a2f-8d5f-497d3af33a70" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "accountNum": 2345678980,&#10;  "customerName": "joni",&#10;  "atmPin": 9090,&#10;  "bankName": "AXIS",&#10;  "accountType": "current",&#10;  "ifscCode": "AXIS01",&#10;  "branchName": "hyderabad",&#10;  "depositAmount": 6000,&#10;  "accountStatus": "InActive",&#10;  "mailId": "joni@gmail.com",&#10;  "contact": 9090909090,&#10;  "transactionTimeStamp": "2022-12-06T11:46:07.0005463+05:30",&#10;  "totalBalance": 6000&#10;}]' encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value='#[{&#10;"queryParams" :  {&#10;                          "accountNum":"2345678960",&#10;                             "atmPin":"9090",&#10;                           "accountType":"savings",&#10;                           "bank":"HDFC"&#10;                           &#10;   }&#10;}]' />
+				<munit:variables >
+					<munit:variable key="dbOutput" value="sdfghkjnmbgftyjuh" />
+					<munit:variable key="accountNum" value="2345678960" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\checkBalance:bank_api-config" doc:id="37428f9b-5a1b-4fdb-9a5e-a2ad92dd793f" name="get:\checkBalance:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="29ed6d04-ba33-4a7f-83de-8ea98e341ba5" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-get:\checkBalance:bank_api-configTest1" doc:id="75918c00-3fda-4883-b83f-2daac90512e2" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d0357b42-ff1f-4759-b01f-b807288d1991" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="49a33ac2-367e-4381-8fe3-28c233833b29" >
+				<munit:payload value='#[output application/json ---&#10;&#10;{&#10;&#10;  "accountNum": 2345678980,&#10;&#10;  "customerName": "joni",&#10;&#10;  "atmPin": 9090,&#10;&#10;  "bankName": "AXIS",&#10;&#10;  "accountType": "current",&#10;&#10;  "ifscCode": "AXIS01",&#10;&#10;  "branchName": "hyderabad",&#10;&#10;  "depositAmount": 6000,&#10;&#10;  "accountStatus": "InActive",&#10;&#10;  "mailId": "joni@gmail.com",&#10;&#10;  "contact": 9090909090,&#10;&#10;  "transactionTimeStamp": "2022-12-06T11:46:07.0005463+05:30",&#10;&#10;  "totalBalance": 6000&#10;&#10;}]' encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value='#[{&#10;&#10;"queryParams" :  {&#10;&#10;                          "accountNum":"2345678960",&#10;&#10;                             "atmPin":"9999",&#10;&#10;                           "accountType":"savings",&#10;&#10;                           "bank":"HDFC"&#10;&#10;                           &#10;&#10;   }&#10;&#10;}]' />
+				<munit:variables >
+					<munit:variable key="dbOutput" value="sdfghkjnmbgftyjuh" />
+					<munit:variable key="accountNum" value="2345678960" />
+				</munit:variables>
+			
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\checkBalance:bank_api-config" doc:id="71bb14ab-935a-47be-a126-ade2d4b20d42" name="get:\checkBalance:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="1ad09edc-49c6-4a6e-9151-b5e8105bc432" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-get:\checkBalance:bank_api-configTest2" doc:id="0c2675ab-492f-46a4-8e29-769fd53efecb" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e42f64fd-7dbd-499a-abe2-47b8d3acefcc" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="a3ede80a-2104-4299-bf7c-8d52e68112f5">
+				<munit:payload value='#[output application/json ---&#10;{&#10;&#10;  "accountNum": 2345678980,&#10;&#10;  "customerName": "joni",&#10;&#10;  "atmPin": 3333,&#10;&#10;  "bankName": "AXIS",&#10;&#10;  "accountType": "current",&#10;&#10;  "ifscCode": "AXIS01",&#10;&#10;  "branchName": "hyderabad",&#10;&#10;  "depositAmount": 6000,&#10;&#10;  "accountStatus": "InActive",&#10;&#10;  "mailId": "joni@gmail.com",&#10;&#10;  "contact": 9090909090,&#10;&#10;  "transactionTimeStamp": "2022-12-06T11:46:07.0005463+05:30",&#10;&#10;  "totalBalance": 6000&#10;&#10;}]' mediaType="application/json" />
+				<munit:attributes value='#[{&#10;&#10;"queryParams" :  {&#10;&#10;                          "accountNum":"2345678980",&#10;&#10;                             "atmPin":"9090",&#10;&#10;                           "accountType":"savings",&#10;&#10;                           "bank":"HDFC"&#10;&#10;                           &#10;&#10;   }&#10;&#10;}]' />
+				<munit:variables >
+					<munit:variable key="dbOutput" value="sdfghkjnmbgftyjuh" />
+					<munit:variable key="accountNum" value="2345678980" />
+				</munit:variables>
+			
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\checkBalance:bank_api-config" doc:id="9f93bf03-70af-4cad-ac6a-af88e9cc1449" name="get:\checkBalance:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ba29eeca-bbe9-4391-b50d-01c6e4b661aa" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-get:\checkBalance:bank_api-configTest3" doc:id="23ef4d2e-a768-444c-8251-f39474954b82" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="aa8b878b-47a5-456f-b752-2b37cd120844" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="4247122c-3350-4a2f-a3e4-a14d3655ea1d" >
+				<munit:payload value='#[output application/json ---&#10;&#10;{&#10;&#10;  "accountNum": 2345678980,&#10;&#10;  "customerName": "joni",&#10;&#10;  "atmPin": 9090,&#10;&#10;  "bankName": "AXIS",&#10;&#10;  "accountType": "current",&#10;&#10;  "ifscCode": "AXIS01",&#10;&#10;  "branchName": "hyderabad",&#10;&#10;  "depositAmount": 6000,&#10;&#10;  "accountStatus": "InActive",&#10;&#10;  "mailId": "joni@gmail.com",&#10;&#10;  "contact": 9090909090,&#10;&#10;  "transactionTimeStamp": "2022-12-06T11:46:07.0005463+05:30",&#10;&#10;  "totalBalance": 6000&#10;&#10;}]' encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value='#[{&#10;&#10;"queryParams" :  {&#10;&#10;                          "accountNum":"23456789",&#10;&#10;                             "atmPin":"9090",&#10;&#10;                           "accountType":"savings",&#10;&#10;                           "bank":"HDFC"&#10;&#10;                           &#10;&#10;   }&#10;&#10;}]' />
+				<munit:variables >
+					<munit:variable key="dbOutput" value="sdfghkjnmbgftyjuh" />
+					<munit:variable key="accountNum" value="2345678960" />
+				</munit:variables>
+			
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\checkBalance:bank_api-config" doc:id="675dde86-ffb4-4b3b-aa99-0010c6cd1f83" name="get:\checkBalance:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="76db9456-106f-4cd7-bb7f-fb4286a9d030" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:\unblock:application\json:bank_api-configTest" doc:id="8d7ea048-cffe-4bf9-b51b-d32b0463c3bd" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0edf3c67-0070-45d3-9e3b-c530cc98a9c7" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[ output application/json ---&#10;  [{&#10;    "atmPin": "9090",&#10;    "accountNum": "2345678960",&#10;    "depositAmount": "2000",&#10;    "accountType": "current",&#10;    "ifscCode": "HDFC06",&#10;    "accountStatus": "Active",&#10;    "contact": "9908984989",&#10;    "mailId": "vasanth@gmail.com",&#10;    "bankName": "HDFC",&#10;    "customerName": "vasanth",&#10;    "transactionTimeStamp": "2022-11-09T14:53:46.4863011+05:30",&#10;    "totalBalance": "2000",&#10;    "branchName": "hyderabad"&#10;  }]&#10;]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c180886b-c64d-41d6-93a7-4fa6d57eb75c" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="updating accountStatus" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="270cc35d-2733-4908-8a10-2e524c372dc4" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="93278a3f-eff9-4a87-96d8-f5d7d0ee2b93" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 2345678960,&#10;  "bank" :"ICICI"&#10;}&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="e1d600d4-67c1-45b4-88a8-3b93ca84006c" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="2f05db8d-4b9c-4d8d-9123-fd6206e60508" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:\unblock:application\json:bank_api-configTest1" doc:id="f30ac30c-a404-47e7-becd-ab77c5475b1b" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a2caa844-eac6-45ff-a968-72c057853c6d" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[ output application/json ---&#10;&#10; [&#10;  {&#10;    "atmPin": "6543",&#10;    "accountNum": "6666432876",&#10;    "depositAmount": "9000",&#10;    "accountType": "savings",&#10;    "ifscCode": "ICICI42",&#10;    "accountStatus": "InActive",&#10;    "contact": "9908984989",&#10;    "mailId": "usha@gmail.com",&#10;    "bankName": "ICICI",&#10;    "customerName": "usha",&#10;    "transactionTimeStamp": "2022-11-09T11:32:18.8439225+05:30",&#10;    "totalBalance": "9000",&#10;    "branchName": "hyderabad"&#10;  }&#10;]&#10;]' mediaType="application/json" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="69b3c3e1-0fdd-419b-b1c3-dd57bda826c9" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="updating accountStatus" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="270cc35d-2733-4908-8a10-2e524c372dc4" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="e0fee79f-6952-423a-a377-ae738424f1a9" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 6666432876,&#10;  "bank" :"ICICI"&#10;}&#10;&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="e9d762e5-8971-4394-8230-65d200854157" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="13cb161a-f940-4e1d-bd36-46a6a4e32a38" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:\unblock:application\json:bank_api-configTest2" doc:id="d9297011-8770-4993-8feb-7579e907aa75" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="68c8f579-c895-404f-af10-934d37253535" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json ---&#10; []&#10;]" mediaType="application/json" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="3613a880-6749-4352-8419-af115a2b7d3a" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 66664328,&#10;  "bank" :"ICICI"&#10;}&#10;&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			
+
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="b652d97c-ae81-4276-a981-306a59b35dea" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="bee0c989-74cf-4df4-b2c0-9939e2c18275" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:APIKIT:BAD_REQUEST" doc:id="d1dc636c-ca30-4e87-8cbb-2c688b724e8b" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ffeeb563-e5cd-4fd2-8c3b-e06f0c3e67c8" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json ---&#10;&#10; []&#10;&#10;]" mediaType="application/json" />
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			
+
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="6c21a163-2add-4066-8ca5-86b252ca11c3" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 66664328,&#10;  "bank" :"ICICI"&#10;}&#10;&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			
+
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="98f21b93-5766-4d4c-969d-1206076b6345" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="328a035b-4b60-49bc-b8c0-3bafbd8e2b30" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:APIKIT:NOT_FOUND" doc:id="39e99d50-a5c7-4733-82ac-6981b50eb712" description="Test" expectedErrorType="APIKIT:NOT_FOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0024a096-0479-4c5f-96cb-638320682eca" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json ---&#10;&#10; []&#10;&#10;]" mediaType="application/json" />
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			
+
+
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="67a39662-3130-4c93-ae92-bf1df29252ae" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 66664328,&#10;  "bank" :"ICICI"&#10;}&#10;&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			
+
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="db706c87-8e49-4dab-b070-72462348e8ce" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="c7efa1a7-3255-4274-b0bf-27c52e29e226" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:APIKIT:METHOD_NOT_ALLOWED" doc:id="e5204c2f-7cd7-4b3a-bea3-56494c394a0a" description="Test" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="27bc43c5-4b5e-4554-8904-f1b6897cc873" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json ---&#10;&#10; []&#10;&#10;]" mediaType="application/json" />
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+
+
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="83eaf976-981e-4930-88b7-46a67ebb13af" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 66664328,&#10;  "bank" :"ICICI"&#10;}&#10;&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			
+
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="5eb0ef87-6e5e-410f-89b3-97b28cc996ad" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="aae640f1-6cbf-45f5-949f-313a0131b86e" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:APIKIT:NOT_ACCEPTABLE" doc:id="297e5769-ce68-4353-8ea8-875c0ad0a0dc" description="Test" expectedErrorType="APIKIT:NOT_ACCEPTABLE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="66eb6391-42bc-45d9-a022-dfe095aa307f" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json ---&#10;&#10; []&#10;&#10;]" mediaType="application/json" />
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+
+
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="1f4ac52c-1388-4183-adac-cb17a1ea708e" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 66664328,&#10;  "bank" :"ICICI"&#10;}&#10;&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			
+
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="77493e67-4cf0-45d0-a80b-c94f9b933e69" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="392743e8-696b-43d3-8bea-078507ad6433" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:APIKIT:UNSUPPORTED_MEDIA_TYPE" doc:id="6a9b934c-001a-4145-9617-a4f58e80a62d" description="Test" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="74800ee9-d603-41be-8feb-7c0e1235f757" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json ---&#10;&#10; []&#10;&#10;]" mediaType="application/json" />
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+
+
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="60db2552-4ffb-4121-b509-0fe26524a29d" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 66664328,&#10;  "bank" :"ICICI"&#10;}&#10;&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			
+
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="2a445f72-3d59-4a0f-bc30-9fad6377cfea" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="2b4b5149-f955-4000-b96a-62c64ffd78e8" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="bank_api-test-suite-put:APIKIT:NOT_IMPLEMENTED" doc:id="ef2c6c3b-518c-414d-a4d0-fe72b51b1616" description="Test" expectedErrorType="APIKIT:NOT_IMPLEMENTED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a6fc328c-ae43-4bcf-94ca-8fb026766a0f" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fetching bank account details" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="29be46ba-0821-4f26-b092-dbe918add2ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json ---&#10;&#10; []&#10;&#10;]" mediaType="application/json" />
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			
+
+
+
+
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="0eb38fe0-e43c-4628-95ca-ddf29a581479" >
+				<munit:payload value='#[output application/json ---&#10;{&#10;  "user" : "admin",&#10;  "password" : "admin",&#10;  "accountNum" : 66664328,&#10;  "bank" :"ICICI"&#10;}&#10;&#10;]' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="inputData" value="jsdkauhdia" />
+					<munit:variable key="validation" value="admin" />
+				</munit:variables>
+			
+
+</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\unblock:application\json:bank_api-config" doc:id="eef999c3-2bd7-49b8-a1bd-de230064ecdb" name="put:\unblock:application\json:bank_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="2097bc5e-cfa2-4c62-94c3-2b0942936387" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	
+
+
+</mule>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="checkingBankBalance-flow" doc:id="88ccd3ce-aadc-45ed-afce-b0619e814e5c" >
+		<ee:transform doc:name="metadata" doc:id="478a1ba0-c5f0-4e28-a010-6c6a5421f490" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="type" ><![CDATA[attributes.queryParams.accountType ]]></ee:set-variable>
+				<ee:set-variable variableName="num" ><![CDATA[  attributes.queryParams.accountNum]]></ee:set-variable>
+				<ee:set-variable variableName="pin" ><![CDATA[attributes.queryParams.atmPin]]></ee:set-variable>
+				<ee:set-variable variableName="bank" ><![CDATA[attributes.queryParams.bank ]]></ee:set-variable>
+			
+</ee:variables>
+		</ee:transform>
+		<db:select doc:name="fetching bank details" doc:id="1a7eac09-fc43-4cc5-a2d1-4a52207d99c3" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from Bank_Transactions where accountNum = :accountNum;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"accountNum" : vars.num
+	
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="payload of bank" doc:id="eb9fcef8-2432-45d8-a218-971d3cbd311c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="dbOutput" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="fetching DB data message" doc:id="0e57dca9-82e7-4af3-8af8-040276974edb" message='#["Fetching DB data"]'/>
+		<choice doc:name="Choice" doc:id="b7ff7c6d-add0-4204-831d-0754532f5707" >
+			<when expression="#[payload != []]">
+				<choice doc:name="Choice" doc:id="81014816-e209-4299-8c91-a441b8fdd5d7" >
+					<when expression='#[vars.dbOutput.accountStatus contains "Active"]'>
+						<choice doc:name="Choice" doc:id="1fe6103d-8433-424f-8cd8-37c9fa2613e9" >
+							<when expression="#[vars.dbOutput.atmPin contains vars.pin]">
+								<ee:transform doc:name="total Balance payload" doc:id="4e09c5f3-7c8c-4139-9a92-8f6d2a036ff4">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"totalBalance": "Your total balance is" ++ " " ++ vars.dbOutput.totalBalance[0] ++ "  " ++ (now() as Date { format: "yyyy-MMM-dd"}) as String {format: "yyyy-MMM-dd"}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+								<logger level="INFO" doc:name="total Balance message" doc:id="1a351c27-21d9-44fd-8330-b84a97cba675" message='#["total balance "]'/>
+							
+</when>
+							<otherwise >
+								<ee:transform doc:name="status of ATM pin if wrong" doc:id="086175cf-136a-4b4b-8f58-bd239f980b80" >
+									<ee:message >
+										<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"status" : "ATM pin is wrong"]]></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+								<logger level="INFO" doc:name="atm pin message" doc:id="aee51af4-07aa-4be1-80a7-f0ead1f7edd1" message="atm pin is wrong"/>
+							
+</otherwise>
+						</choice>
+					</when>
+					<otherwise >
+						<ee:transform doc:name="status of Bank Account if blocked" doc:id="d9c6f18d-8ca0-432d-8e8c-49b4aff512c5" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"status" : "AccountNumber" ++ " " ++  vars.dbOutput.accountNum[0] ++ " " ++ "temporarily 
+blocked Please visit the nearest Branch" ]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<logger level="INFO" doc:name="bank account status message" doc:id="8a27c787-0880-4385-b3ef-5e93d3987767" message='#["bank account is blocked"]'/>
+					
+</otherwise>
+				</choice>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="status of Account Number if does not exist" doc:id="23f61065-1866-4779-9945-f6357fe37067" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"status": "AccountNumber" ++ " - " ++  vars.num ++"  " ++ "does not exist"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="account does not exist message" doc:id="a23fa693-da36-4d8e-9024-0eab35568ad8" message='#["account does not exist"]' />
+			</otherwise>
+		</choice>
+	</flow>
+	</mule>

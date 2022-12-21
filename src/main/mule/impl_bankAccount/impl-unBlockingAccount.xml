@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	
+	
+	<flow name="unblockingAccount-Flow" doc:id="c467a477-87db-4bb8-be11-10d263f38c3d" >
+		<ee:transform doc:name="inputData" doc:id="9ef81646-0392-4ad1-8702-e1fb8485db09" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="validation" ><![CDATA[%dw 2.0
+output application/json
+---
+if(payload.user == "admin" and payload.password == "admin")"true"  else "please check correct user and password "]]></ee:set-variable>
+				<ee:set-variable variableName="inputData" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<try doc:name="Try" doc:id="5873337f-a8dc-497a-96ac-ec2146e5137f" >
+			<validation:is-true doc:id="e9a99181-f60a-46c8-8ae0-9c01e4795ba7" config-ref="Validation_Config" expression="#[vars.validation]" doc:name="validating user and password"/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d06da6a6-1ddc-45de-b7e7-5e2cd56275ba" type="ANY">
+					<ee:transform doc:name="error message" doc:id="8ddb12d8-807a-4267-a112-274be7465f61" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+"please check correct UserName and password"]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="validation message" doc:id="b811ea35-d507-4055-b8b6-675abdf568df" message='#["validation checked successfully"]'/>
+		<db:select doc:name="fetching bank account details" doc:id="29be46ba-0821-4f26-b092-dbe918add2ec" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from Bank_Transactions where accountNum = :accountNum ]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"accountNum" : vars.inputData.accountNum
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="dbdata" doc:id="a24e482c-f62e-4cdd-9129-e55b2a85d1d7" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="dbData" ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="3c25c6c8-637b-480c-8826-06dd3c451495" >
+			<when expression="#[payload != []]">
+				<choice doc:name="Choice" doc:id="42a1d44a-ddc0-401e-bb89-b2f4de3fcab3" >
+					<when expression='#[sizeOf(vars.dbData.accountStatus filter ($ == "Active")) &gt;0]'>
+						<ee:transform doc:name="acount status payload" doc:id="a0310db5-69a9-4f03-98d4-9280f708af13">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"AccountNum" ++ "-" ++ vars.inputData.accountNum ++ " " ++ "is in Active status"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+						<logger level="INFO" doc:name="account status message" doc:id="9ac6b6fa-dc5e-4965-b613-ee640197cf33" message="account is in active status"/>
+					</when>
+					<otherwise >
+						<db:update doc:name="updating accountStatus" doc:id="270cc35d-2733-4908-8a10-2e524c372dc4" config-ref="Database_Config">
+							<db:sql ><![CDATA[update Bank_Transactions set accountStatus = "Active" where accountNum = :accountNum]]></db:sql>
+							<db:input-parameters ><![CDATA[#[{
+	"accountNum" : vars.inputData.accountNum
+}]]]></db:input-parameters>
+						</db:update>
+						<ee:transform doc:name="updated payload" doc:id="5a291029-b130-47d7-8fc6-209a7cbe0cc3" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"account is " ++ "" ++ vars.inputData.accountNum ++ " " ++ "Unblocked"]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<logger level="INFO" doc:name="updated to active message" doc:id="8bbaed03-124a-46c9-91d5-43de4d014cf0" message='#["updated to active"]'/>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="status of bank account" doc:id="1a500b8e-cedc-4241-89f2-3dace2d384fb" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"AccountNumber" ++ " " ++ vars.inputData.accountNum ++ " " ++ "does not exist Enter Valid Details"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="status of bank account message" doc:id="464ec54d-9b10-4069-b4c6-22ac127c9a08" message="account does not exist"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
